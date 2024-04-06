@@ -23,7 +23,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`font-sans ${inter.variable}`}>
         <Navbar />
-        {children}
+        <main className="p-6">{children}</main>
       </body>
     </html>
   );

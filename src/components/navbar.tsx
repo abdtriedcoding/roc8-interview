@@ -3,7 +3,7 @@ import { ChevronLeft, ChevronRight, Search, ShoppingCart } from "lucide-react";
 const Navbar = () => {
   // Array of navigation items
   const navItems = [
-    { label: "Category" },
+    { label: "Categories" },
     { label: "Sale" },
     { label: "Clearance" },
     { label: "New stock" },
@@ -22,8 +22,8 @@ const Navbar = () => {
         </div>
         {/* Main Navigation */}
         <div className="mt-4 flex items-center justify-between">
-          <h1 className="text-4xl font-bold">Ecommerce</h1>
-          <div className="flex items-center space-x-12 text-lg font-semibold">
+          <h1 className="text-[32px] font-bold">Ecommerce</h1>
+          <div className="flex items-center space-x-6 text-[16px] font-semibold">
             {/* Mapping over the navItems array */}
             {navItems.map((item, index) => (
               <div key={index}>{item.label}</div>
@@ -38,11 +38,11 @@ const Navbar = () => {
 
       {/* Bottom Section */}
       <div className="flex items-center justify-center space-x-5 bg-zinc-100 p-2">
-        <ChevronLeft className="h-5 w-5" />
-        <p className="text-sm font-medium md:text-base">
+        <ChevronLeft className="h-4 w-4" />
+        <p className="text-sm font-medium">
           Get 10% off on business sign up
         </p>
-        <ChevronRight className="h-5 w-5" />
+        <ChevronRight className="h-4 w-4" />
       </div>
     </>
   );
