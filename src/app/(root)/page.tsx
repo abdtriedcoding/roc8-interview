@@ -1,3 +1,4 @@
+import { db } from "~/server/db";
 import {
   Card,
   CardContent,
@@ -9,6 +10,10 @@ import {
 import { ListItem } from "./_components/list-item";
 
 export default async function HomePage() {
+  const categories = await db.category.findMany({
+    take: 10,
+  });
+
   return (
     <Card className="mx-auto max-w-lg pb-10">
       <CardHeader>
@@ -21,7 +26,9 @@ export default async function HomePage() {
       </CardHeader>
       <CardContent className="space-y-4">
         <h1 className="text-[20px] font-medium">My saved interests!</h1>
-        <ListItem />
+        {categories?.map((category) => {
+          return <ListItem key={category.id} {...category} />;
+        })}
       </CardContent>
       <CardFooter></CardFooter>
     </Card>
