@@ -1,6 +1,3 @@
-import Link from "next/link";
-import { Label } from "~/components/ui/label";
-import { Input } from "~/components/ui/input";
 import { Button } from "~/components/ui/button";
 import {
   Card,
@@ -15,20 +12,14 @@ import {
   InputOTPGroup,
   InputOTPSlot,
 } from "~/components/ui/input-otp";
-
-interface FormFieldProps {
-  label: string;
-  id: string;
-  type: string;
-  placeholder: string;
-}
+import { CreateAccount } from "../_components/create-account";
 
 const Page = () => {
-  const token = true;
+  const token = false;
 
   return (
     <Card className="mx-auto max-w-lg pb-10">
-      {token ? <TokenVerificationContent /> : <AccountCreationContent />}
+      {token ? <TokenVerificationContent /> : <CreateAccount />}
     </Card>
   );
 };
@@ -64,57 +55,6 @@ const TokenVerificationContent = () => {
         </Button>
       </CardFooter>
     </>
-  );
-};
-
-const AccountCreationContent = () => {
-  return (
-    <>
-      <CardHeader>
-        <CardTitle className="text-center text-[32px] font-semibold">
-          Create your account
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <FormField label="Name" id="name" type="text" placeholder="Enter" />
-        <FormField label="Email" id="email" type="email" placeholder="Enter" />
-        <FormField
-          label="Password"
-          id="password"
-          type="password"
-          placeholder="Enter"
-        />
-      </CardContent>
-      <CardFooter className="flex flex-col space-y-6">
-        <Button asChild className="w-full">
-          <p role="button" className="text-[16px] font-medium">
-            CREATE ACCOUNT
-          </p>
-        </Button>
-        <p className="text-[16px]">
-          Have an Account?{" "}
-          <span className="text-[16px] font-medium">
-            <Link href={"/"}>LOGIN</Link>
-          </span>
-        </p>
-      </CardFooter>
-    </>
-  );
-};
-
-const FormField: React.FC<FormFieldProps> = ({
-  label,
-  id,
-  type,
-  placeholder,
-}) => {
-  return (
-    <div className="space-y-1">
-      <Label className="text-[16px]" htmlFor={id}>
-        {label}
-      </Label>
-      <Input id={id} type={type} placeholder={placeholder} />
-    </div>
   );
 };
 
