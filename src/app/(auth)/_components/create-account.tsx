@@ -56,16 +56,15 @@ export function CreateAccount() {
   const router = useRouter();
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    // await createUser(values);
     try {
       const response = await axios.post("/api/signup", values);
+      const token: string = response.data.token;
       const encryptedToken = CryptoJS.AES.encrypt(
-        response.data.token,
+        token,
         "secret-key",
       ).toString();
 
-      router.push(`/sign-up?token=${encryptedToken}`);
-      // Handle success, redirect, show success message, etc.
+      router.push(`/sign-up?token=${encryptedToken}&email=${values.email}`);
     } catch (error) {
       console.error("Error", error);
     }
