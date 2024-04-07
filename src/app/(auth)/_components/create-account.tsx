@@ -113,7 +113,7 @@ export function CreateAccount() {
         <p className="mx-auto text-[16px]">
           Have an Account?{" "}
           <span className="text-[16px] font-medium">
-            <Link href={"/"}>LOGIN</Link>
+            <Link href={"/login"}>LOGIN</Link>
           </span>
         </p>
       </CardFooter>

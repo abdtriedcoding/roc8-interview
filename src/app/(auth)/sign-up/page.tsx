@@ -3,7 +3,7 @@ import { CreateAccount } from "../_components/create-account";
 import { OTPVerification } from "../_components/otp-verfication";
 
 const SignupPage = () => {
-  const token = true;
+  const token = false;
 
   return (
     <Card className="mx-auto max-w-lg pb-10">
