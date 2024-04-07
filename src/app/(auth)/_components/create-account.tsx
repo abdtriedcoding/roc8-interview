@@ -2,8 +2,11 @@
 
 import { z } from "zod";
 import Link from "next/link";
+import { db } from "~/server/db";
 import { useForm } from "react-hook-form";
+import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { encryptToken, generateToken } from "~/lib/utils";
 
 import {
   CardContent,
@@ -21,9 +24,6 @@ import {
 } from "~/components/ui/form";
 import { Input } from "~/components/ui/input";
 import { Button } from "~/components/ui/button";
-import { db } from "~/server/db";
-import { useRouter } from "next/navigation";
-import { encryptToken, generateToken } from "~/lib/utils";
 
 const formSchema = z.object({
   name: z
@@ -65,7 +65,7 @@ export function CreateAccount() {
       const encryptedToken = encryptToken(token);
       router.push(`/sign-up?token=${encryptedToken}`);
     } catch (error) {
-      console.error("Error creating user:", error);
+      console.error("Error creating user");
     }
   }
 
