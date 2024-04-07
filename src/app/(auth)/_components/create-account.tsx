@@ -1,12 +1,11 @@
 "use client";
 
 import { z } from "zod";
+import axios from "axios";
 import Link from "next/link";
-import { db } from "~/server/db";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { encryptToken, generateToken } from "~/lib/utils";
 
 import {
   CardContent,
@@ -24,6 +23,7 @@ import {
 } from "~/components/ui/form";
 import { Input } from "~/components/ui/input";
 import { Button } from "~/components/ui/button";
+import CryptoJS from "crypto-js";
 
 const formSchema = z.object({
   name: z
@@ -54,18 +54,20 @@ export function CreateAccount() {
   });
 
   const router = useRouter();
+
   async function onSubmit(values: z.infer<typeof formSchema>) {
+    // await createUser(values);
     try {
-      // const user = await db.user.create({
-      //   data: {
-      //     ...values,
-      //   },
-      // });
-      const token = generateToken();
-      const encryptedToken = encryptToken(token);
+      const response = await axios.post("/api/signup", values);
+      const encryptedToken = CryptoJS.AES.encrypt(
+        response.data.token,
+        "secret-key",
+      ).toString();
+
       router.push(`/sign-up?token=${encryptedToken}`);
+      // Handle success, redirect, show success message, etc.
     } catch (error) {
-      console.error("Error creating user");
+      console.error("Error", error);
     }
   }
 
