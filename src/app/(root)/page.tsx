@@ -1,5 +1,5 @@
 import { db } from "~/server/db";
-import { cookies } from "next/headers";
+import getCurrentUser from "~/actions";
 
 import {
   Card,
@@ -25,7 +25,8 @@ export default async function HomePage({
     skip: (pageNumber - 1) * pageSize,
   });
 
-  console.log(cookies().get("Authorization"));
+  const user = await getCurrentUser();
+  console.log(user);
 
   return (
     <Card className="mx-auto max-w-lg pb-10">
