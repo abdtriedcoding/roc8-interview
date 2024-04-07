@@ -1,9 +1,10 @@
 "use client";
 
-import { z } from "zod";
 import axios from "axios";
+import { type z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { otpVerifyFormSchema } from "~/lib/validation";
 
 import {
   Form,
@@ -28,12 +29,6 @@ import { Button } from "~/components/ui/button";
 import { useToast } from "~/components/ui/use-toast";
 import { useRouter, useSearchParams } from "next/navigation";
 
-const FormSchema = z.object({
-  pin: z.string().min(8, {
-    message: "Your one-time password must be 8 characters.",
-  }),
-});
-
 export function OTPVerification() {
   const router = useRouter();
   const { toast } = useToast();
@@ -41,14 +36,14 @@ export function OTPVerification() {
   const email = searchParams.get("email");
   const encryptToken = searchParams.get("token");
 
-  const form = useForm<z.infer<typeof FormSchema>>({
-    resolver: zodResolver(FormSchema),
+  const form = useForm<z.infer<typeof otpVerifyFormSchema>>({
+    resolver: zodResolver(otpVerifyFormSchema),
     defaultValues: {
       pin: "",
     },
   });
 
-  async function onSubmit(data: z.infer<typeof FormSchema>) {
+  async function onSubmit(data: z.infer<typeof otpVerifyFormSchema>) {
     try {
       const response = await axios.post("/api/verify-user", {
         ...data,
@@ -58,6 +53,7 @@ export function OTPVerification() {
 
       if (response.status === 200) {
         handleSuccessRedirect();
+        router.push("/login");
       } else {
         handleVerificationError();
       }

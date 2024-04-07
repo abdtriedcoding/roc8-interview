@@ -1,4 +1,6 @@
 import { db } from "~/server/db";
+import { cookies } from "next/headers";
+
 import {
   Card,
   CardContent,
@@ -22,6 +24,8 @@ export default async function HomePage({
     take: pageSize,
     skip: (pageNumber - 1) * pageSize,
   });
+
+  console.log(cookies().get("Authorization"));
 
   return (
     <Card className="mx-auto max-w-lg pb-10">

@@ -1,9 +1,12 @@
 "use client";
 
-import { z } from "zod";
+import axios from "axios";
 import Link from "next/link";
+import { type z } from "zod";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { useRouter } from "next/navigation";
+import { loginFormSchema } from "~/lib/validation";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import {
@@ -24,30 +27,27 @@ import {
 import { Input } from "~/components/ui/input";
 import { Button } from "~/components/ui/button";
 
-const formSchema = z.object({
-  email: z.string().email({
-    message: "Invalid email format.",
-  }),
-  password: z
-    .string()
-    .min(6, {
-      message: "Enter valid password",
-    })
-    .max(50),
-});
-
 export default function LoginPage() {
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const router = useRouter();
+
+  const form = useForm<z.infer<typeof loginFormSchema>>({
+    resolver: zodResolver(loginFormSchema),
     defaultValues: {
       email: "",
       password: "",
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+  async function onSubmit(values: z.infer<typeof loginFormSchema>) {
+    try {
+      await axios.post("/api/login", values);
+      router.push(`/`);
+    } catch (error) {
+      console.error("Error", error);
+    }
   }
+
+  const { isSubmitting, isValid } = form.formState;
 
   const [showPassword, setShowPassword] = useState(false);
 
@@ -79,7 +79,11 @@ export default function LoginPage() {
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter" {...field} />
+                    <Input
+                      disabled={isSubmitting}
+                      placeholder="Enter"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -94,6 +98,7 @@ export default function LoginPage() {
                   <FormControl>
                     <div className="relative">
                       <Input
+                        disabled={isSubmitting}
                         type={showPassword ? "text" : "password"}
                         placeholder="Enter"
                         {...field}
@@ -110,7 +115,11 @@ export default function LoginPage() {
                 </FormItem>
               )}
             />
-            <Button className="w-full" type="submit">
+            <Button
+              disabled={!isValid || isSubmitting}
+              className="w-full"
+              type="submit"
+            >
               <p className="text-[16px] font-medium">LOGIN</p>
             </Button>
           </form>
