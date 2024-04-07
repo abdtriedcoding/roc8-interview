@@ -8,6 +8,7 @@ import {
   CardTitle,
 } from "~/components/ui/card";
 import { ListItem } from "./_components/list-item";
+import { PaginationSystem } from "./_components/pagination";
 
 export default async function HomePage({
   searchParams,
@@ -38,7 +39,9 @@ export default async function HomePage({
           return <ListItem key={category.id} {...category} />;
         })}
       </CardContent>
-      <CardFooter></CardFooter>
+      <CardFooter className="mt-6">
+        <PaginationSystem pageNumber={pageNumber} />
+      </CardFooter>
     </Card>
   );
 }
