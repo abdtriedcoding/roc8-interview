@@ -43,6 +43,8 @@ export function OTPVerification() {
     },
   });
 
+  const { isSubmitting } = form.formState;
+
   async function onSubmit(data: z.infer<typeof otpVerifyFormSchema>) {
     try {
       const response = await axios.post("/api/verify-user", {
@@ -125,7 +127,10 @@ export function OTPVerification() {
                   </FormItem>
                 )}
               />
-              <Button className="mx-auto mt-10 w-full max-w-xl">
+              <Button
+                disabled={isSubmitting}
+                className="mx-auto mt-10 w-full max-w-xl"
+              >
                 <p className="text-[16px] font-medium">VERIFY</p>
               </Button>
             </form>

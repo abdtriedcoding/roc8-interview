@@ -47,7 +47,7 @@ export default function LoginPage() {
     }
   }
 
-  const { isSubmitting, isValid } = form.formState;
+  const { isSubmitting } = form.formState;
 
   const [showPassword, setShowPassword] = useState(false);
 
@@ -115,11 +115,7 @@ export default function LoginPage() {
                 </FormItem>
               )}
             />
-            <Button
-              disabled={!isValid || isSubmitting}
-              className="w-full"
-              type="submit"
-            >
+            <Button disabled={isSubmitting} className="w-full" type="submit">
               <p className="text-[16px] font-medium">LOGIN</p>
             </Button>
           </form>
