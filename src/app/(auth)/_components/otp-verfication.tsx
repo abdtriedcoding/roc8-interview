@@ -28,6 +28,7 @@ import {
 import { Button } from "~/components/ui/button";
 import { useToast } from "~/components/ui/use-toast";
 import { useRouter, useSearchParams } from "next/navigation";
+import { Loader } from "lucide-react";
 
 export function OTPVerification() {
   const router = useRouter();
@@ -69,7 +70,7 @@ export function OTPVerification() {
     toast({
       variant: "success",
       title: "OTP Successfully Verified",
-      description: "You are being redirected to the home page.",
+      description: "You are being redirected to the login page.",
     });
     router.push("/");
   }
@@ -131,8 +132,12 @@ export function OTPVerification() {
               <Button
                 disabled={isSubmitting}
                 className="mx-auto mt-10 w-full max-w-xl"
+                type="submit"
               >
-                <p className="text-[16px] font-medium">VERIFY</p>
+                <div className="flex items-center space-x-3">
+                  {isSubmitting && <Loader className="h-6 w-6 animate-spin" />}
+                  <p className="text-[16px] font-medium">VERIFY</p>
+                </div>
               </Button>
             </form>
           </Form>
