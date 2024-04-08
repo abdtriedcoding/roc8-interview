@@ -9,9 +9,17 @@ import {
 } from "~/components/ui/card";
 import { ListItem } from "./_components/list-item";
 
-export default async function HomePage() {
+export default async function HomePage({
+  searchParams,
+}: {
+  searchParams: Record<string, string | undefined>;
+}) {
+  const pageSize = 6;
+  const { page } = searchParams;
+  const pageNumber = page ? parseInt(page, 10) : 1;
   const categories = await db.category.findMany({
-    take: 10,
+    take: pageSize,
+    skip: (pageNumber - 1) * pageSize,
   });
 
   return (
