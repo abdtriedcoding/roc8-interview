@@ -1,6 +1,7 @@
-import CryptoJS from "crypto-js";
 import { db } from "~/server/db";
 import { NextResponse } from "next/server";
+import Cryptr from "cryptr";
+const cryptr = new Cryptr("abdullah786");
 
 interface ItemsProps {
   pin: string;
@@ -11,10 +12,10 @@ interface ItemsProps {
 export async function POST(req: Request) {
   const { pin, email, encryptToken }: ItemsProps = await req.json();
   try {
-    const decryptedBytes = CryptoJS.AES.decrypt(encryptToken, "secret-key");
-    const decryptedToken = decryptedBytes.toString(CryptoJS.enc.Utf8);
+    const decryptedToken = cryptr.decrypt(encryptToken);
 
     if (pin !== decryptedToken) {
+      console.log(decryptedToken);
       return new NextResponse("Invalid OTP", { status: 400 });
     }
 
@@ -26,7 +27,6 @@ export async function POST(req: Request) {
         isVerified: true,
       },
     });
-
     return new NextResponse("OTP Successfully Verified", { status: 200 });
   } catch (error) {
     console.error("Error:", error);

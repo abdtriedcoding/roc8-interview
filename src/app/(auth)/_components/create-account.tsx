@@ -3,7 +3,7 @@
 import axios from "axios";
 import Link from "next/link";
 import { type z } from "zod";
-import CryptoJS from "crypto-js";
+// import CryptoJS from "crypto-js";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -41,12 +41,7 @@ export function CreateAccount() {
   async function onSubmit(values: z.infer<typeof registerFormSchema>) {
     try {
       const response = await axios.post("/api/signup", values);
-      const token: string = response.data.token;
-      const encryptedToken = CryptoJS.AES.encrypt(
-        token,
-        "secret-key",
-      ).toString();
-
+      const encryptedToken: string = response.data.encryptedToken;
       router.push(`/sign-up?token=${encryptedToken}&email=${values.email}`);
     } catch (error) {
       console.error("Error", error);

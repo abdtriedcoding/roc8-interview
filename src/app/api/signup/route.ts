@@ -4,6 +4,8 @@ import * as nodemailer from "nodemailer";
 import { NextResponse } from "next/server";
 import { generateToken } from "~/lib/utils";
 import { registerFormSchema } from "~/lib/validation";
+import Cryptr from "cryptr";
+const cryptr = new Cryptr("abdullah786");
 
 export async function POST(req: Request) {
   // Create a Nodemailer transporter
@@ -33,6 +35,8 @@ export async function POST(req: Request) {
     });
     // Generate and encrypt verification token
     const token = generateToken();
+    const encryptedToken = cryptr.encrypt(token);
+
     // Create mail options
     const mailOptions = {
       from: "siddabdullah46@gmail.com",
@@ -43,7 +47,7 @@ export async function POST(req: Request) {
 
     // Send email
     await transporter.sendMail(mailOptions);
-    return NextResponse.json({ token });
+    return NextResponse.json({ encryptedToken });
   } catch (error) {
     return new NextResponse("Internal Error", { status: 500 });
   }
