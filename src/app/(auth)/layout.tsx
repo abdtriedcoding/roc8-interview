@@ -1,4 +1,4 @@
-import getCurrentUser from "~/actions";
+import { getCurrentUser } from "~/actions";
 import { redirect } from "next/navigation";
 
 export default async function AuthLayout({
