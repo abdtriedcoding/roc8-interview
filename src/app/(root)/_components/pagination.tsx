@@ -14,7 +14,7 @@ export async function PaginationSystem({ pageNumber }: { pageNumber: number }) {
       <PaginationContent>
         <PaginationItem>
           <PaginationPrevious
-            size={"lg"}
+            size={"sm"}
             href={`/?page=${pageNumber - 1}`}
             aria-disabled={pageNumber <= 1}
             tabIndex={pageNumber <= 1 ? -1 : undefined}
@@ -33,7 +33,7 @@ export async function PaginationSystem({ pageNumber }: { pageNumber: number }) {
             2
           </PaginationLink>
         </PaginationItem>
-        <PaginationItem>
+        <PaginationItem className="hidden md:flex">
           <PaginationLink isActive={pageNumber === 3} href={`/?page=3`}>
             3
           </PaginationLink>
@@ -42,7 +42,7 @@ export async function PaginationSystem({ pageNumber }: { pageNumber: number }) {
           <PaginationEllipsis />
         </PaginationItem>
         <PaginationItem>
-          <PaginationNext size={"lg"} href={`/?page=${pageNumber + 1}`} />
+          <PaginationNext size={"sm"} href={`/?page=${pageNumber + 1}`} />
         </PaginationItem>
       </PaginationContent>
     </Pagination>
