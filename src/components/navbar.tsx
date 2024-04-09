@@ -1,10 +1,22 @@
+"use client";
+
+import cookie from "cookie";
 import Link from "next/link";
 import { navItems } from "~/constants";
-import { getCurrentUser } from "~/actions";
+import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 import { Search, ShoppingCart } from "lucide-react";
 
-const Navbar = async () => {
-  const user = await getCurrentUser();
+const Navbar = () => {
+  const pathname = usePathname();
+  const [username, setUsername] = useState<string>("");
+
+  useEffect(() => {
+    const cookies = cookie.parse(document.cookie);
+    const userDataCookie = JSON.parse(cookies?.userData ?? "{}");
+    const name = userDataCookie?.name as string;
+    setUsername(name || "");
+  }, [pathname]);
 
   return (
     <nav className="p-6">
@@ -12,7 +24,7 @@ const Navbar = async () => {
       <div className="flex items-center justify-end space-x-3 text-sm">
         <p>Help</p>
         <p>Orders & Returns</p>
-        <p className="font-medium">Hi, {user?.name}</p>
+        <p className="font-medium">Hi, {username}</p>
       </div>
       {/* Main Navigation */}
       <div className="mt-4 flex items-baseline justify-between">

@@ -1,11 +1,13 @@
+import Cryptr from "cryptr";
 import { hash } from "bcryptjs";
 import { db } from "~/server/db";
 import * as nodemailer from "nodemailer";
 import { NextResponse } from "next/server";
 import { generateToken } from "~/lib/utils";
 import { registerFormSchema } from "~/lib/validation";
-import Cryptr from "cryptr";
-const cryptr = new Cryptr("abdullah786");
+
+export const dynamic = "force-dynamic";
+const cryptr = new Cryptr(process.env.CRYPTR_KEY!);
 
 export async function POST(req: Request) {
   // Create a Nodemailer transporter
@@ -18,11 +20,11 @@ export async function POST(req: Request) {
     secure: false,
   });
 
-  const body = await req.json();
-  const data = registerFormSchema.parse(body);
-  const { name, email, password } = data;
-
   try {
+    const body = await req.json();
+    const data = registerFormSchema.parse(body);
+    const { name, email, password } = data;
+
     const hashedPassword = await hash(password, 12);
 
     // Create user in the database
@@ -33,16 +35,17 @@ export async function POST(req: Request) {
         password: hashedPassword,
       },
     });
+
     // Generate and encrypt verification token
-    const token = generateToken();
-    const encryptedToken = cryptr.encrypt(token);
+    const verificationToken = generateToken();
+    const encryptedToken = cryptr.encrypt(verificationToken);
 
     // Create mail options
     const mailOptions = {
       from: "siddabdullah46@gmail.com",
       to: email,
       subject: "Email Verification",
-      text: `Your verification token is: ${token}`,
+      text: `Your verification token is: ${verificationToken}`,
     };
 
     // Send email

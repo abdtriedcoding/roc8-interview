@@ -4,6 +4,7 @@ import axios from "axios";
 import Link from "next/link";
 import { type z } from "zod";
 import { useState } from "react";
+import { Loader } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { loginFormSchema } from "~/lib/validation";
@@ -26,7 +27,6 @@ import {
 } from "~/components/ui/form";
 import { Input } from "~/components/ui/input";
 import { Button } from "~/components/ui/button";
-import { Loader } from "lucide-react";
 
 export default function LoginPage() {
   const router = useRouter();
