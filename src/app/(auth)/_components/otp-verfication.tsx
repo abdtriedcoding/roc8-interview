@@ -1,9 +1,8 @@
 "use client";
 
 import { z } from "zod";
-import { useEffect } from "react";
+import CryptoJS from "crypto-js";
 import { useForm } from "react-hook-form";
-import { decryptToken } from "~/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import {
@@ -36,20 +35,8 @@ const FormSchema = z.object({
 
 export function OTPVerification({ token }: { token: string }) {
   const { toast } = useToast();
-  const decryptedToken = decryptToken(token);
-
-  useEffect(() => {
-    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
-      event.preventDefault();
-      return "";
-    };
-
-    window.addEventListener("beforeunload", handleBeforeUnload);
-
-    return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-    };
-  }, []);
+  const decryptedBytes = CryptoJS.AES.decrypt(token, "secret-key");
+  const decryptedToken = decryptedBytes.toString(CryptoJS.enc.Utf8);
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
