@@ -25,6 +25,8 @@ import {
 } from "~/components/ui/card";
 import { Button } from "~/components/ui/button";
 import { useToast } from "~/components/ui/use-toast";
+import { decryptToken } from "~/lib/utils";
+import { useEffect } from "react";
 
 const FormSchema = z.object({
   pin: z.string().min(8, {
@@ -32,8 +34,22 @@ const FormSchema = z.object({
   }),
 });
 
-export function OTPVerification() {
+export function OTPVerification({ token }: { token: string }) {
   const { toast } = useToast();
+  const decryptedToken = decryptToken(token);
+
+  useEffect(() => {
+    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+      event.preventDefault();
+      return "";
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, []);
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -55,6 +71,7 @@ export function OTPVerification() {
 
   return (
     <>
+      <h1>{decryptedToken}</h1>
       <CardHeader>
         <CardTitle className="text-center text-[32px] font-semibold">
           Verify your email

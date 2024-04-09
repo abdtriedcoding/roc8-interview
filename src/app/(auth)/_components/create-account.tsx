@@ -21,6 +21,9 @@ import {
 } from "~/components/ui/form";
 import { Input } from "~/components/ui/input";
 import { Button } from "~/components/ui/button";
+import { db } from "~/server/db";
+import { useRouter } from "next/navigation";
+import { encryptToken, generateToken } from "~/lib/utils";
 
 const formSchema = z.object({
   name: z
@@ -50,8 +53,20 @@ export function CreateAccount() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+  const router = useRouter();
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    try {
+      // const user = await db.user.create({
+      //   data: {
+      //     ...values,
+      //   },
+      // });
+      const token = generateToken();
+      const encryptedToken = encryptToken(token);
+      router.push(`/sign-up?token=${encryptedToken}`);
+    } catch (error) {
+      console.error("Error creating user:", error);
+    }
   }
 
   return (
