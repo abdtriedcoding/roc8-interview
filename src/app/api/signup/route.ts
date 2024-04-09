@@ -25,6 +25,16 @@ export async function POST(req: Request) {
     const data = registerFormSchema.parse(body);
     const { name, email, password } = data;
 
+    // Check if user with the same email already exists
+    const existingUser = await db.user.findUnique({
+      where: { email },
+    });
+    if (existingUser) {
+      return new NextResponse("User with this email already exists", {
+        status: 400,
+      });
+    }
+
     const hashedPassword = await hash(password, 12);
 
     // Create user in the database
