@@ -1,5 +1,6 @@
 import { twMerge } from "tailwind-merge";
 import { type ClassValue, clsx } from "clsx";
+import { toast } from "~/components/ui/use-toast";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -19,4 +20,14 @@ export function getJwtSecretKey() {
 
   const enc: Uint8Array = new TextEncoder().encode(secret);
   return enc;
+}
+
+export function pushToast(
+  variant: "default" | "destructive" | "success",
+  title: string,
+) {
+  toast({
+    variant,
+    title,
+  });
 }

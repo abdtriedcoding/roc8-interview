@@ -29,7 +29,6 @@ export async function POST(req: Request) {
     });
     return new NextResponse("OTP Successfully Verified", { status: 200 });
   } catch (error) {
-    console.error("Error:", error);
     return new NextResponse("Internal Error", { status: 500 });
   }
 }

@@ -1,9 +1,10 @@
 "use client";
 
-import axios from "axios";
 import { type z } from "zod";
 import { Loader } from "lucide-react";
+import { pushToast } from "~/lib/utils";
 import { useForm } from "react-hook-form";
+import axios, { type AxiosError } from "axios";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { otpVerifyFormSchema } from "~/lib/validation";
 
@@ -27,12 +28,10 @@ import {
   CardTitle,
 } from "~/components/ui/card";
 import { Button } from "~/components/ui/button";
-import { useToast } from "~/components/ui/use-toast";
 import { useRouter, useSearchParams } from "next/navigation";
 
 export function OTPVerification() {
   const router = useRouter();
-  const { toast } = useToast();
   const searchParams = useSearchParams();
   const email = searchParams.get("email");
   const encryptedToken = searchParams.get("token");
@@ -55,39 +54,14 @@ export function OTPVerification() {
       });
 
       if (response.status === 200) {
-        handleSuccessRedirect();
+        const successMessage = response?.data as string;
+        pushToast("success", successMessage);
         router.push("/login");
-      } else {
-        handleVerificationError();
       }
     } catch (error) {
-      handleServerError();
+      const errorMessage = (error as AxiosError).response?.data as string;
+      pushToast("destructive", errorMessage);
     }
-  }
-
-  function handleSuccessRedirect() {
-    toast({
-      variant: "success",
-      title: "OTP Successfully Verified",
-      description: "You are being redirected to the login page.",
-    });
-    router.push("/");
-  }
-
-  function handleVerificationError() {
-    toast({
-      variant: "destructive",
-      title: "Invalid OTP",
-      description: "Please enter a valid OTP.",
-    });
-  }
-
-  function handleServerError() {
-    toast({
-      variant: "destructive",
-      title: "Uh oh! Something went wrong.",
-      description: "Please try again later.",
-    });
   }
 
   return (

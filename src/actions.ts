@@ -25,7 +25,6 @@ export async function getCurrentUser() {
     });
     return { ...user, password: undefined };
   } catch (error) {
-    console.error("Error fetching user:", error);
     return null;
   }
 }
@@ -66,6 +65,9 @@ export async function getAllCategoriesWithInterestStatus(
 ): Promise<CategoryWithInterestStatus[]> {
   const pageSize = 6;
   const user = await getCurrentUser();
+  if (!user) {
+    throw new Error("User not found");
+  }
   const categories = await db.category.findMany({
     take: pageSize,
     skip: (pageNumber - 1) * pageSize,

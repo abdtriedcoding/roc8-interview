@@ -1,11 +1,12 @@
 "use client";
 
-import axios from "axios";
 import Link from "next/link";
 import { type z } from "zod";
 import { Loader } from "lucide-react";
+import { pushToast } from "~/lib/utils";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
+import axios, { type AxiosError } from "axios";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { registerFormSchema } from "~/lib/validation";
 
@@ -44,7 +45,8 @@ export function CreateAccount() {
       const encryptedToken: string = response.data.encryptedToken;
       router.push(`/sign-up?token=${encryptedToken}&email=${values.email}`);
     } catch (error) {
-      console.error("Error", error);
+      const errorMessage = (error as AxiosError).response?.data as string;
+      pushToast("destructive", errorMessage);
     }
   }
 

@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useState } from "react";
 import { Button } from "./ui/button";
+import { pushToast } from "~/lib/utils";
 import { useRouter } from "next/navigation";
 
 export default function LogoutButton() {
@@ -15,21 +16,17 @@ export default function LogoutButton() {
 
       if (response.status === 200) {
         router.refresh();
-      } else {
-        console.error("Logout failed");
       }
     } catch (error) {
-      console.error("Something went wrong during logout:", error);
+      pushToast("destructive", "Something went wrong during logout");
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <>
-      <Button className="h-9" onClick={handleLogout} disabled={isLoading}>
-        {isLoading ? "Logging out..." : "Logout"}
-      </Button>
-    </>
+    <Button className="h-9" onClick={handleLogout} disabled={isLoading}>
+      {isLoading ? "Logging out..." : "Logout"}
+    </Button>
   );
 }
