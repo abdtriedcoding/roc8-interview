@@ -1,7 +1,9 @@
 "use client";
 
 import { z } from "zod";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
+import { decryptToken } from "~/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import {
@@ -25,8 +27,6 @@ import {
 } from "~/components/ui/card";
 import { Button } from "~/components/ui/button";
 import { useToast } from "~/components/ui/use-toast";
-import { decryptToken } from "~/lib/utils";
-import { useEffect } from "react";
 
 const FormSchema = z.object({
   pin: z.string().min(8, {
