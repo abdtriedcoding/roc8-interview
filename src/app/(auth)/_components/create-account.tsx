@@ -53,7 +53,7 @@ export function CreateAccount() {
     }
   }
 
-  const { isSubmitting, isValid } = form.formState;
+  const { isSubmitting } = form.formState;
 
   return (
     <>
@@ -117,11 +117,7 @@ export function CreateAccount() {
                 </FormItem>
               )}
             />
-            <Button
-              disabled={!isValid || isSubmitting}
-              className="w-full"
-              type="submit"
-            >
+            <Button disabled={isSubmitting} className="w-full" type="submit">
               <p className="text-[16px] font-medium">CREATE ACCOUNT</p>
             </Button>
           </form>
