@@ -1,0 +1,19 @@
+
+MERN-Test-2024-04-07
+Active
+Design Link: https://www.figma.com/file/EjNZkDNTtgERV5PgF0mxnt/MERN-Assignment?type=design&node-id=33%3A667&mode=design&t=6k9GiDcswPavM0TD-1
+Deadline: April 14th, 5pm IST
+
+MERN Moonshot
+Question
+
+Develop a simple sign-up and login flow for an e-commerce website where users are able to mark the categories that they are interested in.
+You will see 4 screens in the design. First 2 are for the registration of new users, the third one is for the login of an existing user and the 4th one is a protected page that only logged in users can access. On this protected page, users see a list of categories that we have in our database (you can use faker to generate this data - https://fakerjs.dev/). Create 100 entries for the categories in your database using faker. Users can mark the categories that they are interested in. This is a paginated list where only 6 categories are visible at a time. Users can interact with pagination to see categories on various pages. Users should be able to see what categories they selected when they logout and login again. So we should store what they check in our database.
+The header is common for all the pages. The header should be static for the scope of this assignment and should not have any interactions like menus flying out.
+
+What tech to use?
+
+Database: MySQL or Postgres. We recommend using https://neon.tech/ that offers a free postgres database. If you are comfortable with any other database provider than neon, please feel free to use that. Using RDBMS is a must.
+Framework: We recommend using https://create.t3.gg/. This will provide you with Next.js for developing react components. tRPC for writing APIs. Prisma as a database ORM and tailwind setup for writing CSS. Please do not use NextAuth.js for this task. If you wish to write APIs outside tRPC in Next.js, feel free to do so. You can do it normally in Next.js - https://create.t3.gg/en/usage/trpc#how-do-i-call-my-api-externally.
+VCS: Push your code on github and share the repository link. Please make sure you create a public repository.
+App hosting: We recommend hosting your app on vercel’s free tier- https://vercel.dev/. If you have experience with any other free Next.js hosting provider, feel free to use that.
