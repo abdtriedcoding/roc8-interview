@@ -1,11 +1,13 @@
 "use client";
 
-import { z } from "zod";
 import axios from "axios";
 import Link from "next/link";
+import { type z } from "zod";
+import CryptoJS from "crypto-js";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { registerFormSchema } from "~/lib/validation";
 
 import {
   CardContent,
@@ -23,29 +25,12 @@ import {
 } from "~/components/ui/form";
 import { Input } from "~/components/ui/input";
 import { Button } from "~/components/ui/button";
-import CryptoJS from "crypto-js";
-
-const formSchema = z.object({
-  name: z
-    .string()
-    .min(2, {
-      message: "Name must be at least 2 characters.",
-    })
-    .max(50),
-  email: z.string().email({
-    message: "Invalid email format.",
-  }),
-  password: z
-    .string()
-    .min(6, {
-      message: "Password must be at least 6 characters.",
-    })
-    .max(50),
-});
 
 export function CreateAccount() {
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const router = useRouter();
+
+  const form = useForm<z.infer<typeof registerFormSchema>>({
+    resolver: zodResolver(registerFormSchema),
     defaultValues: {
       name: "",
       email: "",
@@ -53,9 +38,7 @@ export function CreateAccount() {
     },
   });
 
-  const router = useRouter();
-
-  async function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof registerFormSchema>) {
     try {
       const response = await axios.post("/api/signup", values);
       const token: string = response.data.token;
@@ -69,6 +52,8 @@ export function CreateAccount() {
       console.error("Error", error);
     }
   }
+
+  const { isSubmitting, isValid } = form.formState;
 
   return (
     <>
@@ -87,7 +72,11 @@ export function CreateAccount() {
                 <FormItem>
                   <FormLabel>Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter" {...field} />
+                    <Input
+                      disabled={isSubmitting}
+                      placeholder="Enter"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -100,7 +89,11 @@ export function CreateAccount() {
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter" {...field} />
+                    <Input
+                      disabled={isSubmitting}
+                      placeholder="Enter"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -113,13 +106,22 @@ export function CreateAccount() {
                 <FormItem>
                   <FormLabel>Password</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter" {...field} />
+                    <Input
+                      disabled={isSubmitting}
+                      type="password"
+                      placeholder="Enter"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            <Button className="w-full" type="submit">
+            <Button
+              disabled={!isValid || isSubmitting}
+              className="w-full"
+              type="submit"
+            >
               <p className="text-[16px] font-medium">CREATE ACCOUNT</p>
             </Button>
           </form>
