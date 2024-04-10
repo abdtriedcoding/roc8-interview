@@ -11,7 +11,7 @@ const SignupPage = ({
 
   return (
     <Card className="mx-auto max-w-lg pb-10">
-      {token ? <OTPVerification token={token} /> : <CreateAccount />}
+      {token ? <OTPVerification /> : <CreateAccount />}
     </Card>
   );
 };

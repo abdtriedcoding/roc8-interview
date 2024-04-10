@@ -1,7 +1,7 @@
 "use client";
 
 import { z } from "zod";
-import CryptoJS from "crypto-js";
+import axios from "axios";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -26,6 +26,7 @@ import {
 } from "~/components/ui/card";
 import { Button } from "~/components/ui/button";
 import { useToast } from "~/components/ui/use-toast";
+import { useRouter, useSearchParams } from "next/navigation";
 
 const FormSchema = z.object({
   pin: z.string().min(8, {
@@ -33,10 +34,12 @@ const FormSchema = z.object({
   }),
 });
 
-export function OTPVerification({ token }: { token: string }) {
+export function OTPVerification() {
+  const router = useRouter();
   const { toast } = useToast();
-  const decryptedBytes = CryptoJS.AES.decrypt(token, "secret-key");
-  const decryptedToken = decryptedBytes.toString(CryptoJS.enc.Utf8);
+  const searchParams = useSearchParams();
+  const email = searchParams.get("email");
+  const encryptToken = searchParams.get("token");
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -45,20 +48,51 @@ export function OTPVerification({ token }: { token: string }) {
     },
   });
 
-  function onSubmit(data: z.infer<typeof FormSchema>) {
+  async function onSubmit(data: z.infer<typeof FormSchema>) {
+    try {
+      const response = await axios.post("/api/verify-user", {
+        ...data,
+        email,
+        encryptToken,
+      });
+
+      if (response.status === 200) {
+        handleSuccessRedirect();
+      } else {
+        handleVerificationError();
+      }
+    } catch (error) {
+      handleServerError();
+    }
+  }
+
+  function handleSuccessRedirect() {
     toast({
-      title: "You submitted the following values:",
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
+      variant: "success",
+      title: "OTP Successfully Verified",
+      description: "You are being redirected to the home page.",
+    });
+    router.push("/");
+  }
+
+  function handleVerificationError() {
+    toast({
+      variant: "destructive",
+      title: "Invalid OTP",
+      description: "Please enter a valid OTP.",
+    });
+  }
+
+  function handleServerError() {
+    toast({
+      variant: "destructive",
+      title: "Uh oh! Something went wrong.",
+      description: "Please try again later.",
     });
   }
 
   return (
     <>
-      <h1>{decryptedToken}</h1>
       <CardHeader>
         <CardTitle className="text-center text-[32px] font-semibold">
           Verify your email
