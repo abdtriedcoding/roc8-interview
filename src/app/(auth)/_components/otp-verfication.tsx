@@ -52,6 +52,7 @@ export function OTPVerification() {
         email,
         encryptToken,
       });
+      console.log(response.data);
 
       if (response.status === 200) {
         handleSuccessRedirect();
