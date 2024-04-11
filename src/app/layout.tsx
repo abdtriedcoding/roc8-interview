@@ -1,7 +1,8 @@
 import "~/styles/globals.css";
 
-import { Inter } from "next/font/google";
 import Navbar from "~/components/navbar";
+import Banner from "~/components/banner";
+import { Inter } from "next/font/google";
 import { Toaster } from "~/components/ui/toaster";
 
 const inter = Inter({
@@ -24,9 +25,10 @@ export default function RootLayout({
     <html lang="en">
       <body className={`font-sans ${inter.variable}`}>
         <Navbar />
+        <Banner />
         <main className="p-6">
-          {children}
           <Toaster />
+          {children}
         </main>
       </body>
     </html>

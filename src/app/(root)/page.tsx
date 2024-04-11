@@ -29,7 +29,7 @@ export default async function HomePage({
           We will keep you notified.
         </CardDescription>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-6">
         <h1 className="text-[20px] font-medium">My saved interests!</h1>
         {categories?.map((category) => {
           return <ListItem key={category.id} {...category} />;
