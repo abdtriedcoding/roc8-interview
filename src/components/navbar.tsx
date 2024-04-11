@@ -1,4 +1,4 @@
-import getCurrentUser from "~/actions";
+import { getCurrentUser } from "~/actions";
 import { ChevronLeft, ChevronRight, Search, ShoppingCart } from "lucide-react";
 
 const Navbar = async () => {

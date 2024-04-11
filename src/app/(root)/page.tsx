@@ -1,6 +1,3 @@
-import { db } from "~/server/db";
-import getCurrentUser from "~/actions";
-
 import {
   Card,
   CardContent,
@@ -11,22 +8,16 @@ import {
 } from "~/components/ui/card";
 import { ListItem } from "./_components/list-item";
 import { PaginationSystem } from "./_components/pagination";
+import { getAllCategoriesWithInterestStatus } from "~/actions";
 
 export default async function HomePage({
   searchParams,
 }: {
   searchParams: Record<string, string | undefined>;
 }) {
-  const pageSize = 6;
   const { page } = searchParams;
   const pageNumber = page ? parseInt(page, 10) : 1;
-  const categories = await db.category.findMany({
-    take: pageSize,
-    skip: (pageNumber - 1) * pageSize,
-  });
-
-  const user = await getCurrentUser();
-  console.log(user);
+  const categories = await getAllCategoriesWithInterestStatus(pageNumber);
 
   return (
     <Card className="mx-auto max-w-lg pb-10">
