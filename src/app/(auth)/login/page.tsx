@@ -26,6 +26,7 @@ import {
 } from "~/components/ui/form";
 import { Input } from "~/components/ui/input";
 import { Button } from "~/components/ui/button";
+import { Loader } from "lucide-react";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -116,7 +117,10 @@ export default function LoginPage() {
               )}
             />
             <Button disabled={isSubmitting} className="w-full" type="submit">
-              <p className="text-[16px] font-medium">LOGIN</p>
+              <div className="flex items-center space-x-3">
+                {isSubmitting && <Loader className="h-6 w-6 animate-spin" />}
+                <p className="text-[16px] font-medium">LOGIN</p>
+              </div>
             </Button>
           </form>
         </Form>
