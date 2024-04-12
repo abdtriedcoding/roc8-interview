@@ -1,21 +1,21 @@
+import Cryptr from "cryptr";
 import { db } from "~/server/db";
 import { NextResponse } from "next/server";
-import Cryptr from "cryptr";
-const cryptr = new Cryptr("abdullah786");
+
+const cryptr = new Cryptr(process.env.CRYPTR_KEY!);
 
 interface ItemsProps {
   pin: string;
   email: string;
-  encryptToken: string;
+  encryptedToken: string;
 }
 
 export async function POST(req: Request) {
-  const { pin, email, encryptToken }: ItemsProps = await req.json();
+  const { pin, email, encryptedToken }: ItemsProps = await req.json();
   try {
-    const decryptedToken = cryptr.decrypt(encryptToken);
+    const decryptedToken = cryptr.decrypt(encryptedToken);
 
     if (pin !== decryptedToken) {
-      console.log(decryptedToken);
       return new NextResponse("Invalid OTP", { status: 400 });
     }
 

@@ -2,6 +2,7 @@
 
 import axios from "axios";
 import { type z } from "zod";
+import { Loader } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { otpVerifyFormSchema } from "~/lib/validation";
@@ -28,14 +29,13 @@ import {
 import { Button } from "~/components/ui/button";
 import { useToast } from "~/components/ui/use-toast";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Loader } from "lucide-react";
 
 export function OTPVerification() {
   const router = useRouter();
   const { toast } = useToast();
   const searchParams = useSearchParams();
   const email = searchParams.get("email");
-  const encryptToken = searchParams.get("token");
+  const encryptedToken = searchParams.get("token");
 
   const form = useForm<z.infer<typeof otpVerifyFormSchema>>({
     resolver: zodResolver(otpVerifyFormSchema),
@@ -51,9 +51,8 @@ export function OTPVerification() {
       const response = await axios.post("/api/verify-user", {
         ...data,
         email,
-        encryptToken,
+        encryptedToken,
       });
-      console.log(response.data);
 
       if (response.status === 200) {
         handleSuccessRedirect();

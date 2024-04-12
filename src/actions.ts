@@ -1,26 +1,23 @@
 "use server";
 
-import { type Category } from "@prisma/client";
 import { db } from "./server/db";
 import { cookies } from "next/headers";
-import { decodeAuthToken } from "~/lib/utils";
+import { type Category } from "@prisma/client";
+
 type CategoryWithInterestStatus = Category & { isInterested: boolean };
 
 export async function getCurrentUser() {
-  const token = cookies().get("Authorization");
-  if (!token) {
-    return null;
-  }
+  const userDataCookie = cookies().get("userData");
 
-  const email = decodeAuthToken(token.value);
-  if (!email) {
+  if (!userDataCookie) {
     return null;
   }
+  const userData = JSON.parse(userDataCookie?.value);
 
   try {
     const user = await db.user.findUnique({
       where: {
-        email: email,
+        email: userData.email,
       },
       include: {
         interests: true,

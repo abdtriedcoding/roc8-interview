@@ -3,7 +3,7 @@
 import axios from "axios";
 import Link from "next/link";
 import { type z } from "zod";
-// import CryptoJS from "crypto-js";
+import { Loader } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -25,7 +25,6 @@ import {
 } from "~/components/ui/form";
 import { Input } from "~/components/ui/input";
 import { Button } from "~/components/ui/button";
-import { Loader } from "lucide-react";
 
 export function CreateAccount() {
   const router = useRouter();
