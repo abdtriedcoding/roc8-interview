@@ -2,29 +2,39 @@
 
 import cookie from "cookie";
 import Link from "next/link";
+import LogoutButton from "./logoutButton";
 import { navItems } from "~/constants";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { Search, ShoppingCart } from "lucide-react";
 
+interface User {
+  id: string;
+  email: string;
+  name: string;
+  isVerified: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 const Navbar = () => {
   const pathname = usePathname();
-  const [username, setUsername] = useState<string>("");
+  const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
     const cookies = cookie.parse(document.cookie);
-    const userDataCookie = JSON.parse(cookies?.userData ?? "{}");
-    const name = userDataCookie?.name as string;
-    setUsername(name || "");
+    const userDataCookie: User = JSON.parse(cookies?.userData ?? "{}");
+    setUser(Object.keys(userDataCookie).length > 0 ? userDataCookie : null);
   }, [pathname]);
 
   return (
     <nav className="p-6">
       {/* Top Navigation */}
       <div className="flex items-center justify-end space-x-3 text-sm">
-        <p>Help</p>
-        <p>Orders & Returns</p>
-        <p className="font-medium">Hi, {username}</p>
+        <p className="hidden md:flex">Help</p>
+        <p className="hidden md:flex">Orders & Returns</p>
+        <p className="font-medium">Hi, {user?.name}</p>
+        {user && <LogoutButton />}
       </div>
       {/* Main Navigation */}
       <div className="mt-4 flex items-baseline justify-between">
