@@ -97,7 +97,8 @@ export function OTPVerification() {
           Verify your email
         </CardTitle>
         <CardDescription className="mx-auto max-w-sm text-center text-[16px] text-black">
-          Enter the 8-digit code you have received on swa***@gmail.com
+          Enter the 8-digit code you have received on{" "}
+          <strong>{email?.substring(0, 3)}***@gmail.com</strong>
         </CardDescription>
       </CardHeader>
       <CardContent className="flex flex-col">
