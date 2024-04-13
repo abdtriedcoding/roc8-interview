@@ -1,12 +1,13 @@
 "use client";
 
-import axios from "axios";
 import Link from "next/link";
 import { type z } from "zod";
 import { useState } from "react";
 import { Loader } from "lucide-react";
+import { pushToast } from "~/lib/utils";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
+import axios, { type AxiosError } from "axios";
 import { loginFormSchema } from "~/lib/validation";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -41,10 +42,15 @@ export default function LoginPage() {
 
   async function onSubmit(values: z.infer<typeof loginFormSchema>) {
     try {
-      await axios.post("/api/login", values);
-      router.push(`/`);
+      const response = await axios.post("/api/login", values);
+      if (response.status === 200) {
+        const successMessage = response?.data as string;
+        pushToast("success", successMessage);
+        router.push("/");
+      }
     } catch (error) {
-      console.error("Error", error);
+      const errorMessage = (error as AxiosError).response?.data as string;
+      pushToast("destructive", errorMessage);
     }
   }
 

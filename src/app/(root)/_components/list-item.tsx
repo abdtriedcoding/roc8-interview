@@ -18,14 +18,9 @@ export function ListItem({ id, name, isInterested }: ItemProps) {
 
   const handleToggleInterest = async (id: number) => {
     setIsLoading(true);
-    try {
-      await toggleInterest(id);
-      router.refresh();
-    } catch (error) {
-      console.error("Error toggling interest:", error);
-    } finally {
-      setIsLoading(false);
-    }
+    await toggleInterest(id);
+    setIsLoading(false);
+    router.refresh();
   };
 
   return (
