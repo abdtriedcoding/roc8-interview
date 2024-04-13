@@ -1,18 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { toggleInterest } from "~/actions";
-import { Checkbox } from "~/components/ui/checkbox";
 import { Loader } from "lucide-react";
+import { toggleInterest } from "~/actions";
+import { useRouter } from "next/navigation";
+import { type ListItemProps } from "~/types";
+import { Checkbox } from "~/components/ui/checkbox";
 
-interface ItemProps {
-  id: number;
-  name: string;
-  isInterested: boolean;
-}
-
-export function ListItem({ id, name, isInterested }: ItemProps) {
+export function ListItem({ id, name, isInterested }: ListItemProps) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
 

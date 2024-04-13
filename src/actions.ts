@@ -2,9 +2,7 @@
 
 import { db } from "./server/db";
 import { cookies } from "next/headers";
-import { type Category } from "@prisma/client";
-
-type CategoryWithInterestStatus = Category & { isInterested: boolean };
+import { type CategoryWithInterestStatus } from "./types";
 
 export async function getCurrentUser() {
   const userDataCookie = cookies().get("userData");

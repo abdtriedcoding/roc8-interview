@@ -2,28 +2,20 @@
 
 import cookie from "cookie";
 import Link from "next/link";
-import LogoutButton from "./logoutButton";
 import { navItems } from "~/constants";
+import { type UserProps } from "~/types";
+import LogoutButton from "./logoutButton";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { Search, ShoppingCart } from "lucide-react";
 
-interface User {
-  id: string;
-  email: string;
-  name: string;
-  isVerified: boolean;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
 const Navbar = () => {
   const pathname = usePathname();
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<UserProps | null>(null);
 
   useEffect(() => {
     const cookies = cookie.parse(document.cookie);
-    const userDataCookie: User = JSON.parse(cookies?.userData ?? "{}");
+    const userDataCookie: UserProps = JSON.parse(cookies?.userData ?? "{}");
     setUser(Object.keys(userDataCookie).length > 0 ? userDataCookie : null);
   }, [pathname]);
 
