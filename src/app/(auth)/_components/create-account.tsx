@@ -3,13 +3,13 @@
 import Link from "next/link";
 import { type z } from "zod";
 import { Loader } from "lucide-react";
-import { pushToast } from "~/lib/utils";
 import { useForm } from "react-hook-form";
-import { useRouter } from "next/navigation";
-import axios, { type AxiosError } from "axios";
+import { signup } from "~/app/actions/auth";
+import { Input } from "~/components/ui/input";
+import { Button } from "~/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useToast } from "~/components/ui/use-toast";
 import { registerFormSchema } from "~/lib/validation";
-
 import {
   CardContent,
   CardFooter,
@@ -24,11 +24,9 @@ import {
   FormLabel,
   FormMessage,
 } from "~/components/ui/form";
-import { Input } from "~/components/ui/input";
-import { Button } from "~/components/ui/button";
 
 export function CreateAccount() {
-  const router = useRouter();
+  const { toast } = useToast();
 
   const form = useForm<z.infer<typeof registerFormSchema>>({
     resolver: zodResolver(registerFormSchema),
@@ -40,13 +38,12 @@ export function CreateAccount() {
   });
 
   async function onSubmit(values: z.infer<typeof registerFormSchema>) {
-    try {
-      const response = await axios.post("/api/signup", values);
-      const encryptedToken: string = response.data.encryptedToken;
-      router.push(`/sign-up?token=${encryptedToken}&email=${values.email}`);
-    } catch (error) {
-      const errorMessage = (error as AxiosError).response?.data as string;
-      pushToast("destructive", errorMessage);
+    const res = await signup(values);
+    if (res?.error) {
+      toast({
+        variant: "destructive",
+        title: res.error,
+      });
     }
   }
 
