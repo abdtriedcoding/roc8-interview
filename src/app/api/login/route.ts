@@ -8,6 +8,7 @@ import { NextResponse, type NextRequest } from "next/server";
 
 const jwtExpires = 60 * 60 * 24 * 7; // 7 days
 
+// TODO: in future we need to remove this as i have created a server action that can handle this stuff
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();

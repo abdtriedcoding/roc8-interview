@@ -11,6 +11,7 @@ export function generateToken() {
   return token.toString();
 }
 
+// TODO need to remove this function
 export function getJwtSecretKey() {
   const secret = process.env.JWT_SECRET;
 

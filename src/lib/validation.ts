@@ -32,6 +32,7 @@ export const loginFormSchema = z.object({
   }),
   password: z
     .string()
+    .trim()
     .min(6, {
       message: "Enter valid password",
     })
