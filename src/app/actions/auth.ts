@@ -7,7 +7,7 @@ import { db } from "~/server/db";
 import * as nodemailer from "nodemailer";
 import { redirect } from "next/navigation";
 import { generateToken } from "~/lib/utils";
-import { registerFormSchema } from "~/lib/validation";
+import { otpVerifyFormSchema, registerFormSchema } from "~/lib/validation";
 
 const cryptr = new Cryptr(process.env.CRYPTR_KEY!);
 let encryptedToken = null;
@@ -70,4 +70,44 @@ export async function signup(values: z.infer<typeof registerFormSchema>) {
     };
   }
   redirect(`/sign-up?token=${encryptedToken}&email=${email}`);
+}
+
+export async function verifyOtp(
+  values: z.infer<typeof otpVerifyFormSchema>,
+  encryptedToken: string,
+  email: string,
+) {
+  const result = otpVerifyFormSchema.safeParse(values);
+
+  if (!result.success) {
+    return {
+      error: "Invalid otp",
+    };
+  }
+
+  const { pin } = values;
+
+  try {
+    const decryptedToken = cryptr.decrypt(encryptedToken);
+
+    if (pin !== decryptedToken) {
+      return {
+        error: "Invalid otp",
+      };
+    }
+
+    await db.user.update({
+      where: {
+        email: email,
+      },
+      data: {
+        isVerified: true,
+      },
+    });
+  } catch (error) {
+    return {
+      error: "Something went wrong",
+    };
+  }
+  redirect("/login");
 }

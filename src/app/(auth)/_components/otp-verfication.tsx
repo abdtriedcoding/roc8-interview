@@ -2,12 +2,12 @@
 
 import { type z } from "zod";
 import { Loader } from "lucide-react";
-import { pushToast } from "~/lib/utils";
 import { useForm } from "react-hook-form";
-import axios, { type AxiosError } from "axios";
+import { verifyOtp } from "~/app/actions/auth";
+import { Button } from "~/components/ui/button";
+import { useToast } from "~/components/ui/use-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { otpVerifyFormSchema } from "~/lib/validation";
-
 import {
   Form,
   FormControl,
@@ -27,14 +27,15 @@ import {
   CardHeader,
   CardTitle,
 } from "~/components/ui/card";
-import { Button } from "~/components/ui/button";
-import { useRouter, useSearchParams } from "next/navigation";
 
-export function OTPVerification() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const email = searchParams.get("email");
-  const encryptedToken = searchParams.get("token");
+export function OTPVerification({
+  encryptedToken,
+  email,
+}: {
+  encryptedToken: string;
+  email: string;
+}) {
+  const { toast } = useToast();
 
   const form = useForm<z.infer<typeof otpVerifyFormSchema>>({
     resolver: zodResolver(otpVerifyFormSchema),
@@ -43,26 +44,17 @@ export function OTPVerification() {
     },
   });
 
-  const { isSubmitting } = form.formState;
-
   async function onSubmit(data: z.infer<typeof otpVerifyFormSchema>) {
-    try {
-      const response = await axios.post("/api/verify-user", {
-        ...data,
-        email,
-        encryptedToken,
+    const res = await verifyOtp(data, encryptedToken, email);
+    if (res?.error) {
+      toast({
+        variant: "destructive",
+        title: res.error,
       });
-
-      if (response.status === 200) {
-        const successMessage = response?.data as string;
-        pushToast("success", successMessage);
-        router.push("/login");
-      }
-    } catch (error) {
-      const errorMessage = (error as AxiosError).response?.data as string;
-      pushToast("destructive", errorMessage);
     }
   }
+
+  const { isSubmitting } = form.formState;
 
   return (
     <>

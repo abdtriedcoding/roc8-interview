@@ -9,7 +9,7 @@ interface ItemsProps {
   email: string;
   encryptedToken: string;
 }
-
+// TODO: in future we need to remove this as i have created a server action that can handle this stuff
 export async function POST(req: Request) {
   const { pin, email, encryptedToken }: ItemsProps = await req.json();
   try {
