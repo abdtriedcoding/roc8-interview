@@ -2,14 +2,15 @@
 
 import Cryptr from "cryptr";
 import { type z } from "zod";
-import { SignJWT } from "jose";
 import { hash } from "bcryptjs";
 import { db } from "~/server/db";
 import { compare } from "bcryptjs";
 import { cookies } from "next/headers";
 import * as nodemailer from "nodemailer";
+import { jwtVerify, SignJWT } from "jose";
 import { redirect } from "next/navigation";
 import { generateToken } from "~/lib/utils";
+import { type CustomJWTPayload } from "~/types";
 import {
   loginFormSchema,
   otpVerifyFormSchema,
@@ -169,4 +170,17 @@ export async function login(values: z.infer<typeof loginFormSchema>) {
     };
   }
   redirect("/");
+}
+
+export async function getSession() {
+  const session = cookies().get("session")?.value;
+  if (!session) return null;
+  const { payload } = await jwtVerify(session, key, {
+    algorithms: ["HS256"],
+  });
+  return payload as CustomJWTPayload;
+}
+
+export async function logout() {
+  cookies().delete("session");
 }
