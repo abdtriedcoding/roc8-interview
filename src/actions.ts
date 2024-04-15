@@ -6,12 +6,11 @@ import { getSession } from "~/app/actions/auth";
 export async function getAllCategories() {
   const session = await getSession();
   if (!session?.user) {
-    return { error: "You must be logged in to manage interests" };
+    throw new Error("You must be logged in");
   }
+  const userId = session.user.id;
 
   try {
-    const userId = session.user.id;
-
     const categories = await db.category.findMany({
       include: {
         userInterests: {

@@ -1,8 +1,6 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-// TODO: need to migrate reset this and initialize again in order to make it work properly after vercel deployment
-
 generator client {
     provider = "prisma-client-js"
 }
