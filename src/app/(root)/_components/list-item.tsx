@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import { type ListItemProps } from "~/types";
 import { Checkbox } from "~/components/ui/checkbox";
 
-export function ListItem({ id, name, isInterested }: ListItemProps) {
+export function ListItem({ id, name, isChecked }: ListItemProps) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -24,7 +24,7 @@ export function ListItem({ id, name, isInterested }: ListItemProps) {
         <Loader className="h-4 w-4 animate-spin" />
       ) : (
         <Checkbox
-          checked={isInterested}
+          checked={isChecked}
           onCheckedChange={() => handleToggleInterest(id)}
           id="terms"
         />

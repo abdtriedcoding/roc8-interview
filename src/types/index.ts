@@ -1,5 +1,4 @@
 import { type JWTPayload } from "jose";
-import { type Category } from "@prisma/client";
 
 export interface CustomJWTPayload extends JWTPayload {
   user: {
@@ -15,7 +14,5 @@ export interface CustomJWTPayload extends JWTPayload {
 export interface ListItemProps {
   id: number;
   name: string;
-  isInterested: boolean;
+  isChecked: boolean;
 }
-
-export type CategoryWithInterestStatus = Category & { isInterested: boolean };

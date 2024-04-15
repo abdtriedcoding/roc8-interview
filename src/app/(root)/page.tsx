@@ -7,17 +7,24 @@ import {
   CardTitle,
 } from "~/components/ui/card";
 import { ListItem } from "./_components/list-item";
-import { PaginationSystem } from "./_components/pagination";
-import { getAllCategoriesWithInterestStatus } from "~/actions";
+// import { PaginationSystem } from "./_components/pagination";
+import { getAllCategories } from "~/actions";
+
+type CategoryWithInterest = {
+  isChecked: boolean;
+  userInterests: { categoryId: number }[];
+  id: number;
+  name: string;
+};
 
 export default async function HomePage({
   searchParams,
 }: {
   searchParams: Record<string, string | undefined>;
 }) {
-  const { page } = searchParams;
-  const pageNumber = page ? parseInt(page, 10) : 1;
-  const categories = await getAllCategoriesWithInterestStatus(pageNumber);
+  // const { page } = searchParams;
+  // const pageNumber = page ? parseInt(page, 10) : 1;
+  const categories = (await getAllCategories()) as CategoryWithInterest[];
 
   return (
     <Card className="mx-auto max-w-lg pb-10">
@@ -36,7 +43,7 @@ export default async function HomePage({
         })}
       </CardContent>
       <CardFooter className="mt-6">
-        <PaginationSystem pageNumber={pageNumber} />
+        {/* <PaginationSystem pageNumber={pageNumber} /> */}
       </CardFooter>
     </Card>
   );
