@@ -3,7 +3,9 @@
 import { db } from "~/server/db";
 import { getSession } from "~/app/actions/auth";
 
-export async function getAllCategories() {
+const pageSize = 6;
+
+export async function getAllCategories(pageNumber: number) {
   const session = await getSession();
   if (!session?.user) {
     throw new Error("You must be logged in");
@@ -18,6 +20,8 @@ export async function getAllCategories() {
           select: { categoryId: true },
         },
       },
+      take: pageSize,
+      skip: (pageNumber - 1) * pageSize,
     });
 
     return categories.map((category) => ({
