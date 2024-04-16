@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { type z } from "zod";
 import { useState } from "react";
-import { Loader } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { login } from "~/app/actions/auth";
 import { Input } from "~/components/ui/input";
@@ -121,7 +121,7 @@ export default function LoginPage() {
             />
             <Button disabled={isSubmitting} className="w-full" type="submit">
               <div className="flex items-center space-x-3">
-                {isSubmitting && <Loader className="h-6 w-6 animate-spin" />}
+                {isSubmitting && <Loader2 className="h-6 w-6 animate-spin" />}
                 <p className="text-[16px] font-medium">LOGIN</p>
               </div>
             </Button>
