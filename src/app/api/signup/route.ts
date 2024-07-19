@@ -6,6 +6,7 @@ import { NextResponse } from "next/server";
 import { generateToken } from "~/lib/utils";
 import { registerFormSchema } from "~/lib/validation";
 
+// TODO: in future delete this because we i created server action that can hadle this all stuff
 export const dynamic = "force-dynamic";
 const cryptr = new Cryptr(process.env.CRYPTR_KEY!);
 

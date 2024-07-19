@@ -22,6 +22,7 @@ export function getJwtSecretKey() {
   return enc;
 }
 
+// TODO: remove this function
 export function pushToast(
   variant: "default" | "destructive" | "success",
   title: string,
