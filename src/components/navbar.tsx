@@ -1,23 +1,12 @@
-"use client";
-
-import cookie from "cookie";
 import Link from "next/link";
 import { navItems } from "~/constants";
-import { type UserProps } from "~/types";
-import LogoutButton from "./logoutButton";
-import { useEffect, useState } from "react";
-import { usePathname } from "next/navigation";
+import LogoutButton from "./logout-button";
+import { getSession } from "~/app/actions/auth";
 import { Search, ShoppingCart } from "lucide-react";
 
-const Navbar = () => {
-  const pathname = usePathname();
-  const [user, setUser] = useState<UserProps | null>(null);
-
-  useEffect(() => {
-    const cookies = cookie.parse(document.cookie);
-    const userDataCookie: UserProps = JSON.parse(cookies?.userData ?? "{}");
-    setUser(Object.keys(userDataCookie).length > 0 ? userDataCookie : null);
-  }, [pathname]);
+export default async function Navbar() {
+  const session = await getSession();
+  const user = session?.user;
 
   return (
     <nav className="p-6">
@@ -47,6 +36,4 @@ const Navbar = () => {
       </div>
     </nav>
   );
-};
-
-export default Navbar;
+}

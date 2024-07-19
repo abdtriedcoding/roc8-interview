@@ -4,6 +4,7 @@ import { db } from "./server/db";
 import { cookies } from "next/headers";
 import { type CategoryWithInterestStatus } from "./types";
 
+// TODO need to delete this getuser function
 export async function getCurrentUser() {
   const userDataCookie = cookies().get("userData");
 
