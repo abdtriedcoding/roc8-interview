@@ -2,15 +2,24 @@
 
 import Cryptr from "cryptr";
 import { type z } from "zod";
+import { SignJWT } from "jose";
 import { hash } from "bcryptjs";
 import { db } from "~/server/db";
+import { compare } from "bcryptjs";
+import { cookies } from "next/headers";
 import * as nodemailer from "nodemailer";
 import { redirect } from "next/navigation";
 import { generateToken } from "~/lib/utils";
-import { otpVerifyFormSchema, registerFormSchema } from "~/lib/validation";
+import {
+  loginFormSchema,
+  otpVerifyFormSchema,
+  registerFormSchema,
+} from "~/lib/validation";
 
 const cryptr = new Cryptr(process.env.CRYPTR_KEY!);
 let encryptedToken = null;
+const jwtExpires = 60 * 60 * 24 * 7; // 7 days
+const key = new TextEncoder().encode(process.env.JWT_SECRET);
 
 export async function signup(values: z.infer<typeof registerFormSchema>) {
   const result = registerFormSchema.safeParse(values);
@@ -110,4 +119,54 @@ export async function verifyOtp(
     };
   }
   redirect("/login");
+}
+
+export async function login(values: z.infer<typeof loginFormSchema>) {
+  const result = loginFormSchema.safeParse(values);
+
+  if (!result.success) {
+    return {
+      error: "Invalid email or password",
+    };
+  }
+
+  const { email, password } = values;
+
+  try {
+    const userInfo = await db.user.findUnique({
+      where: { email: email },
+    });
+
+    if (!userInfo || !(await compare(password, userInfo.password))) {
+      return {
+        error: "Invalid email or password",
+      };
+    }
+
+    const user = {
+      id: userInfo.id,
+      email: userInfo.email,
+      name: userInfo.name,
+    };
+
+    const session = await new SignJWT({
+      user,
+      expires: jwtExpires,
+    })
+      .setProtectedHeader({ alg: "HS256" })
+      .setIssuedAt()
+      .setExpirationTime(`${jwtExpires}s`)
+      .sign(key);
+
+    cookies().set({
+      name: "session",
+      value: session,
+      path: "/",
+    });
+  } catch (error) {
+    return {
+      error: "Something went wrong during login",
+    };
+  }
+  redirect("/");
 }

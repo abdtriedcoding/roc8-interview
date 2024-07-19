@@ -4,13 +4,14 @@ import Link from "next/link";
 import { type z } from "zod";
 import { useState } from "react";
 import { Loader } from "lucide-react";
-import { pushToast } from "~/lib/utils";
 import { useForm } from "react-hook-form";
-import { useRouter } from "next/navigation";
-import axios, { type AxiosError } from "axios";
+import { login } from "~/app/actions/auth";
+import { Input } from "~/components/ui/input";
+import { Button } from "~/components/ui/button";
 import { loginFormSchema } from "~/lib/validation";
+import { useToast } from "~/components/ui/use-toast";
+import { Separator } from "~/components/ui/separator";
 import { zodResolver } from "@hookform/resolvers/zod";
-
 import {
   Card,
   CardContent,
@@ -26,11 +27,15 @@ import {
   FormLabel,
   FormMessage,
 } from "~/components/ui/form";
-import { Input } from "~/components/ui/input";
-import { Button } from "~/components/ui/button";
 
 export default function LoginPage() {
-  const router = useRouter();
+  const { toast } = useToast();
+  const [showPassword, setShowPassword] = useState(false);
+
+  const toggleShowPassword = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    setShowPassword((prev) => !prev);
+  };
 
   const form = useForm<z.infer<typeof loginFormSchema>>({
     resolver: zodResolver(loginFormSchema),
@@ -41,27 +46,16 @@ export default function LoginPage() {
   });
 
   async function onSubmit(values: z.infer<typeof loginFormSchema>) {
-    try {
-      const response = await axios.post("/api/login", values);
-      if (response.status === 200) {
-        const successMessage = response?.data as string;
-        pushToast("success", successMessage);
-        router.push("/");
-      }
-    } catch (error) {
-      const errorMessage = (error as AxiosError).response?.data as string;
-      pushToast("destructive", errorMessage);
+    const res = await login(values);
+    if (res?.error) {
+      toast({
+        variant: "destructive",
+        title: res.error,
+      });
     }
   }
 
   const { isSubmitting } = form.formState;
-
-  const [showPassword, setShowPassword] = useState(false);
-
-  const toggleShowPassword = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    setShowPassword(!showPassword);
-  };
 
   return (
     <Card className="mx-auto max-w-lg pb-10">
@@ -71,14 +65,17 @@ export default function LoginPage() {
         </CardTitle>
         <div className="mx-auto justify-center space-y-2">
           <h2 className="text-[24px] font-medium">Welcome back to ECOMMERCE</h2>
-          <h4 className="text-center text-[16px]">
+          <h4 className="text-center text-[16px] font-medium">
             The next gen business marketplace
           </h4>
         </div>
       </CardHeader>
       <CardContent className="space-y-4">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="space-y-8 pb-4"
+          >
             <FormField
               control={form.control}
               name="email"
@@ -130,6 +127,8 @@ export default function LoginPage() {
             </Button>
           </form>
         </Form>
+
+        <Separator />
       </CardContent>
       <CardFooter>
         <p className="mx-auto text-[16px]">
