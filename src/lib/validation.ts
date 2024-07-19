@@ -20,6 +20,12 @@ export const registerFormSchema = z.object({
     .max(50),
 });
 
+export const otpVerifyFormSchema = z.object({
+  pin: z.string().min(8, {
+    message: "Your one-time password must be 8 characters.",
+  }),
+});
+
 export const loginFormSchema = z.object({
   email: z.string().email({
     message: "Invalid email format.",
@@ -30,10 +36,4 @@ export const loginFormSchema = z.object({
       message: "Enter valid password",
     })
     .max(50),
-});
-
-export const otpVerifyFormSchema = z.object({
-  pin: z.string().min(8, {
-    message: "Your one-time password must be 8 characters.",
-  }),
 });
