@@ -17,9 +17,9 @@ import {
   registerFormSchema,
 } from "~/lib/validation";
 
-const cryptr = new Cryptr(process.env.CRYPTR_KEY!);
 let encryptedToken = null;
 const jwtExpires = 60 * 60 * 24 * 7; // 7 days
+const cryptr = new Cryptr(process.env.CRYPTR_KEY!);
 const key = new TextEncoder().encode(process.env.JWT_SECRET);
 
 export async function signup(values: z.infer<typeof registerFormSchema>) {

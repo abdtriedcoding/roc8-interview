@@ -1,8 +1,4 @@
-
-MERN-Test-2024-04-07
-Active
 Design Link: https://www.figma.com/file/EjNZkDNTtgERV5PgF0mxnt/MERN-Assignment?type=design&node-id=33%3A667&mode=design&t=6k9GiDcswPavM0TD-1
-Deadline: April 14th, 5pm IST
 
 MERN Moonshot
 Question
