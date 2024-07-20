@@ -7,15 +7,8 @@ import {
   CardTitle,
 } from "~/components/ui/card";
 import { ListItem } from "./_components/list-item";
+import { getAllCategories } from "~/app/actions/getAllCategories";
 // import { PaginationSystem } from "./_components/pagination";
-import { getAllCategories } from "~/actions";
-
-type CategoryWithInterest = {
-  isChecked: boolean;
-  userInterests: { categoryId: number }[];
-  id: number;
-  name: string;
-};
 
 export default async function HomePage({
   searchParams,
@@ -24,7 +17,7 @@ export default async function HomePage({
 }) {
   // const { page } = searchParams;
   // const pageNumber = page ? parseInt(page, 10) : 1;
-  const categories = (await getAllCategories()) as CategoryWithInterest[];
+  const categories = await getAllCategories();
 
   return (
     <Card className="mx-auto max-w-lg pb-10">
