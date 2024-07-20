@@ -1,82 +1,81 @@
 "use server";
 
-import { db } from "./server/db";
-import { cookies } from "next/headers";
-import { type CategoryWithInterestStatus } from "./types";
+import { db } from "~/server/db";
+import { getSession } from "~/app/actions/auth";
 
-// TODO need to delete this getuser function
-export async function getCurrentUser() {
-  const userDataCookie = cookies().get("userData");
-
-  if (!userDataCookie) {
-    return null;
+export async function getAllCategories() {
+  const session = await getSession();
+  if (!session?.user) {
+    return { error: "You must be logged in to manage interests" };
   }
-  const userData = JSON.parse(userDataCookie?.value);
 
   try {
-    const user = await db.user.findUnique({
-      where: {
-        email: userData.email,
-      },
+    const userId = session.user.id;
+
+    const categories = await db.category.findMany({
       include: {
-        interests: true,
+        userInterests: {
+          where: { userId },
+          select: { categoryId: true },
+        },
       },
     });
-    return { ...user, password: undefined };
+
+    return categories.map((category) => ({
+      ...category,
+      isChecked: category.userInterests.some(
+        (interest) => interest.categoryId === category.id,
+      ),
+    }));
   } catch (error) {
-    return null;
+    throw new Error("Something went wrong while fetching categories");
   }
 }
 
-export async function toggleInterest(id: number) {
-  const user = await getCurrentUser();
-  if (!user) {
-    throw new Error("User not found");
+export async function toggleInterest(categoryId: number) {
+  const session = await getSession();
+  if (!session?.user) {
+    return { error: "You must be logged in to manage interests" };
   }
 
-  const category = await db.category.findUnique({
-    where: { id },
-  });
-  if (!category) {
-    throw new Error("Category not found");
-  }
+  const user = session.user;
 
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-  const isInterested = !!user?.interests?.filter(
-    (interest) => interest.id === id,
-  ).length;
-
-  if (isInterested) {
-    await db.user.update({
-      where: { id: user?.id },
-      data: { interests: { disconnect: { id } } },
+  try {
+    const category = await db.category.findUnique({
+      where: { id: categoryId },
     });
-  } else {
-    await db.user.update({
-      where: { id: user?.id },
-      data: { interests: { connect: { id } } },
+
+    if (!category) {
+      return { error: "Category not found" };
+    }
+
+    const existingInterest = await db.userInterest.findUnique({
+      where: {
+        categoryId_userId: {
+          categoryId,
+          userId: user.id,
+        },
+      },
     });
-  }
-}
 
-export async function getAllCategoriesWithInterestStatus(
-  pageNumber: number,
-): Promise<CategoryWithInterestStatus[]> {
-  const pageSize = 6;
-  const user = await getCurrentUser();
-  if (!user) {
-    throw new Error("User not found");
+    if (existingInterest) {
+      await db.userInterest.delete({
+        where: {
+          categoryId_userId: {
+            categoryId,
+            userId: user.id,
+          },
+        },
+      });
+    } else {
+      await db.userInterest.create({
+        data: {
+          categoryId,
+          userId: user.id,
+        },
+      });
+    }
+  } catch (error) {
+    return { error: "Something went wrong" };
   }
-  const categories = await db.category.findMany({
-    take: pageSize,
-    skip: (pageNumber - 1) * pageSize,
-  });
-  const categoriesWithInterestStatus = categories.map((category) => {
-    const isInterested = !!user?.interests?.filter(
-      (interest) => interest.id === category.id,
-    ).length;
-    return { ...category, isInterested };
-  });
-
-  return categoriesWithInterestStatus;
 }

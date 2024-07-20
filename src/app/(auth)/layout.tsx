@@ -1,12 +1,13 @@
-import { getCurrentUser } from "~/actions";
 import { redirect } from "next/navigation";
+import { getSession } from "~/app/actions/auth";
 
 export default async function AuthLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const user = await getCurrentUser();
-  if (user) redirect("/");
+  const session = await getSession();
+  if (session?.user) redirect("/");
+
   return <>{children}</>;
 }

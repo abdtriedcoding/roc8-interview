@@ -6,7 +6,6 @@ const db = new PrismaClient();
 async function main() {
   try {
     for (let i = 0; i < 100; i++) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
       await db.category.create({
         data: {
           name: faker.commerce.department(),
